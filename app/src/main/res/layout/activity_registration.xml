@@ -12,7 +12,16 @@
         android:layout_height="100dp" />
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/editTextUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="NAME" />
+
+    <EditText
+        android:id="@+id/editTextUserEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -21,7 +30,7 @@
         android:inputType="textEmailAddress" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/editTextUserPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -29,19 +38,29 @@
         android:hint="PASSWORD"
         android:inputType="textPassword" />
 
+    <EditText
+        android:id="@+id/editTextUserPasswordRepeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:hint="REPEAT PASSWORD"
+        android:inputType="textPassword" />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
+
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/buttonRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Login" />
+        android:text="Register" />
 
     <TextView
-        android:id="@+id/textVievLoginInfo"
+        android:id="@+id/textVievRegisterInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
@@ -51,10 +70,10 @@
         android:layout_height="12dp" />
 
     <TextView
-        android:id="@+id/textViewRegister"
+        android:id="@+id/textViewLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Register" />
+        android:text="Login" />
 
 </LinearLayout>

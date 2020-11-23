@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText password;
     private Button login;
     private TextView info;
+    private TextView register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +25,20 @@ public class MainActivity extends AppCompatActivity {
         email = (EditText)findViewById(R.id.editTextTextEmailAddress);
         password = (EditText)findViewById(R.id.editTextTextPassword);
         login = (Button)findViewById(R.id.buttonLogin);
-        info = (TextView)findViewById(R.id.textVievInfo);
+        info = (TextView)findViewById(R.id.textVievLoginInfo);
+        register = (TextView)findViewById(R.id.textViewRegister);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 validate(email.getText().toString(), password.getText().toString());
+            }
+        });
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openRegisterActiviy();
             }
         });
     }
@@ -43,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
         }else{
             info.setText("Wrong email or password");
         }
+    }
+
+    private void openRegisterActiviy(){
+        info.setText("");
+        Intent intent = new Intent(this, RegistrationActivity.class);
+        startActivity(intent);
     }
 
 }
