@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "755014386031",
+    "firebase_url": "https://gamewishlist-12459.firebaseio.com",
+    "project_id": "gamewishlist-12459",
+    "storage_bucket": "gamewishlist-12459.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755014386031:android:a6ca6c846291391d0ca89a",
+        "android_client_info": {
+          "package_name": "pl.pwr.s241936.gamewishlist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755014386031-ppp15m0cnhsp2htpnmqts1unosp9evof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD73KtRQoIwGc2Ub21KiCPTbGkX7kctWeA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755014386031-ppp15m0cnhsp2htpnmqts1unosp9evof.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
