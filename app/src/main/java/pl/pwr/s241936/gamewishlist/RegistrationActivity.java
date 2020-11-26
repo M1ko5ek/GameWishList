@@ -1,16 +1,22 @@
 package pl.pwr.s241936.gamewishlist;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -21,7 +27,9 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button register;
     private TextView info;
     private TextView login;
-    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth mAuth;
+    private String user_email;
+    private String user_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,18 +37,30 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
         SetupUIViews();
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
+        mAuth = FirebaseAuth.getInstance();
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(validate()){
                     // send to firebase
-                    info.setText("Registered");
+                    user_email = RegistrationActivity.this.userEmail.getText().toString().trim();
+                    user_password = RegistrationActivity.this.userPassword1.getText().toString().trim();
+
+                    mAuth.createUserWithEmailAndPassword(user_email,user_password).addOnCompleteListener(RegistrationActivity.this,new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RegistrationActivity.this, "Registration succesful", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(RegistrationActivity.this, "Registration failed ", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         });
+
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +92,6 @@ public class RegistrationActivity extends AppCompatActivity {
         }
         }else if (!password1.equals(password2)){
             Toast.makeText(this, "Please repeat the password correctly", Toast.LENGTH_SHORT).show();
-            info.setText("haslo");
         } else{
             result = true;
         }
