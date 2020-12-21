@@ -31,12 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        email = (EditText)findViewById(R.id.editTextTextEmailAddress);
-        password = (EditText)findViewById(R.id.editTextTextPassword);
-        login = (Button)findViewById(R.id.buttonLogin);
-        info = (TextView)findViewById(R.id.textVievLoginInfo);
-        register = (TextView)findViewById(R.id.textViewRegister);
+        setupUIViews();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -73,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setupUIViews(){
+        email = (EditText)findViewById(R.id.editTextTextEmailAddress);
+        password = (EditText)findViewById(R.id.editTextTextPassword);
+        login = (Button)findViewById(R.id.buttonLogin);
+        info = (TextView)findViewById(R.id.textVievLoginInfo);
+        register = (TextView)findViewById(R.id.textViewRegister);
+    }
+
+
     private void openRegisterActiviy(){
         info.setText("");
         Intent intent = new Intent(this, RegistrationActivity.class);
@@ -98,5 +102,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-
 }
