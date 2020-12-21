@@ -1,7 +1,6 @@
 package pl.pwr.s241936.gamewishlist;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -78,8 +77,6 @@ public class AddGameActivity extends AppCompatActivity {
                 }).start();
             }
         });
-
-
     }
 
     private void setupUIViews(){
@@ -109,5 +106,4 @@ public class AddGameActivity extends AppCompatActivity {
         text20 = (TextView)findViewById(R.id.text20);
         textViews = new TextView[]{text0, text1, text2, text3, text4, text5, text6, text7, text8, text9, text10, text11, text12 ,text13, text14, text15, text16, text17, text18, text19, text20};
     }
-
 }

@@ -1,25 +1,14 @@
 package pl.pwr.s241936.gamewishlist;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-
 
 public class GameListActivity extends AppCompatActivity {
 
     private Button addGame;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +22,7 @@ public class GameListActivity extends AppCompatActivity {
                 openAddGameActivity();
             }
         });
-
-
-
     }
-
 
     private void setupUIViews(){
         addGame = (Button)findViewById(R.id.addGame);
@@ -47,7 +32,6 @@ public class GameListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AddGameActivity.class);
         startActivity(intent);
     }
-
 }
 
 
