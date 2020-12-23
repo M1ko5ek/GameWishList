@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,11 +19,13 @@ import java.io.IOException;
 public class AddGameActivity extends AppCompatActivity {
 
     private TextView info;
-    private Button button;
+    private Button search;
+    private Button add;
     private EditText gameName;
     private String name;
     private TextView text0,text1,text2,text3,text4,text5,text6,text7,text8,text9,text10,text11,text12,text13,text14,text15,text16,text17,text18,text19,text20;
     private TextView[] textViews;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +33,7 @@ public class AddGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_game);
         setupUIViews();
 
-        button.setOnClickListener(new View.OnClickListener() {
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 name = AddGameActivity.this.gameName.getText().toString();
@@ -70,6 +76,21 @@ public class AddGameActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    add.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                            DatabaseReference myRef = database.getReference("games");
+                                            myRef.setValue(info.getText().toString());
+                                        }
+                                    });
+
+                                }
+                            });
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -80,8 +101,9 @@ public class AddGameActivity extends AppCompatActivity {
     }
 
     private void setupUIViews(){
-        info = (TextView)findViewById(R.id.textView);
-        button = (Button)findViewById(R.id.button);
+        info = (TextView)findViewById(R.id.textViewInfo);
+        search = (Button)findViewById(R.id.button);
+        add = (Button)findViewById(R.id.button2);
         gameName = (EditText)findViewById(R.id.editText);
         text0 = (TextView)findViewById(R.id.text0);
         text1 = (TextView)findViewById(R.id.text1);
