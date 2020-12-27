@@ -37,7 +37,6 @@ public class GameListActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         String userID = mAuth.getUid();
-        System.out.println(userID);
         String path = "/users/" + userID + "/titles";
 
         DatabaseReference myRef = database.getReference(path);
