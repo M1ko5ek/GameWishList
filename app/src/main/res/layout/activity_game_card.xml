@@ -39,14 +39,16 @@
         app:layout_constraintTop_toBottomOf="@+id/gameTitle"
         app:layout_constraintVertical_bias="0.044" />
 
-    <TextView
-        android:id="@+id/link"
+    <Button
+        android:id="@+id/goToStore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="GO TO STORE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gamePrice"
-        app:layout_constraintVertical_bias="0.066" />
+        app:layout_constraintVertical_bias="0.097" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

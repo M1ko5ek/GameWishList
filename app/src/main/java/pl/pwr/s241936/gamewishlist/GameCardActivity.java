@@ -2,7 +2,11 @@ package pl.pwr.s241936.gamewishlist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -14,7 +18,8 @@ import java.io.IOException;
 
 public class GameCardActivity extends AppCompatActivity {
 
-    private TextView gameTitle, gamePrice, link;
+    private TextView gameTitle, gamePrice;
+    private Button goToStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +46,22 @@ public class GameCardActivity extends AppCompatActivity {
                                 String title = element.select("span.title").text();
                                 if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase())) {
                                     String price = element.select("div[class=col search_price  responsive_secondrow]").text();
-                                    String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow]").text();
-                                    gamePrice.setText(price + " " + discountedPrice);
+                                    if(price == ""){
+                                        String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow ]").text();
+                                        discountedPrice = discountedPrice.split("zł",2)[1];
+                                        gamePrice.setText(discountedPrice);
+                                    } else{
+                                        gamePrice.setText(price);
+                                    }
+                                    final String link = element.select("a").attr("href");
+                                    goToStore.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Uri uriUrl = Uri.parse(link);
+                                            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+                                            startActivity(launchBrowser);
+                                        }
+                                    });
                                 }
                             }
                         }
@@ -57,6 +76,7 @@ public class GameCardActivity extends AppCompatActivity {
     private void setupUIViews() {
         gameTitle = (TextView)findViewById(R.id.gameTitle);
         gamePrice = (TextView)findViewById(R.id.gamePrice);
-        link = (TextView)findViewById(R.id.link);
+        goToStore = (Button)findViewById(R.id.goToStore);
+
     }
 }
