@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,11 +17,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class GameListActivity extends AppCompatActivity {
 
     private Button addGame;
     private TextView gameList;
     private Button logut;
+    private FirebaseAuth mAuth;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +34,26 @@ public class GameListActivity extends AppCompatActivity {
         setupUIViews();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("games");
+
+        mAuth = FirebaseAuth.getInstance();
+        String userID = mAuth.getUid();
+        System.out.println(userID);
+        String path = "/users/" + userID + "/titles";
+
+        DatabaseReference myRef = database.getReference(path);
+
+        final ArrayList<String> list = new ArrayList<>();
+        final ArrayAdapter adapter = new ArrayAdapter<String>(this,R.layout.list_item,list);
+        listView.setAdapter(adapter);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                gameList.setText(value);
+                list.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    list.add(snapshot.getValue().toString());
+                }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -45,6 +63,12 @@ public class GameListActivity extends AppCompatActivity {
         });
 
 
+       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+               gameList.setText(listView.getItemAtPosition(i).toString());
+           }
+       });
         addGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,6 +89,7 @@ public class GameListActivity extends AppCompatActivity {
         addGame = (Button)findViewById(R.id.addGame);
         gameList = (TextView)findViewById(R.id.textViewGameList);
         logut = (Button)findViewById(R.id.logout);
+        listView = (ListView)findViewById(R.id.listView);
     }
 
     private void openAddGameActivity(){

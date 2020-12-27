@@ -6,7 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -25,13 +27,17 @@ public class AddGameActivity extends AppCompatActivity {
     private String name;
     private TextView text0,text1,text2,text3,text4,text5,text6,text7,text8,text9,text10,text11,text12,text13,text14,text15,text16,text17,text18,text19,text20;
     private TextView[] textViews;
-
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_game);
         setupUIViews();
+
+        mAuth = FirebaseAuth.getInstance();
+        final String userID = mAuth.getUid();
+        System.out.println(userID);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,13 +67,13 @@ public class AddGameActivity extends AppCompatActivity {
                                         for (Element element : elements) {
                                             if (n <= 20) {
                                                 final String title = element.select("span.title").text();
-                                                final String price = element.select("div[class=col search_price  responsive_secondrow]").text();
-                                                final String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow]").text();
-                                                textViews[n].setText(title + " " + price + " " + discountedPrice);
+                                                //final String price = element.select("div[class=col search_price  responsive_secondrow]").text();
+                                                //final String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow]").text();
+                                                textViews[n].setText(title);
                                                 textViews[n].setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View view) {
-                                                        info.setText(title + " " + price + " " + discountedPrice);
+                                                        info.setText(title);
                                                     }
                                                 });
                                                 n = n + 1;
@@ -83,9 +89,11 @@ public class AddGameActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(View view) {
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                            DatabaseReference myRef = database.getReference("games");
-                                            if(info.getText() != ""){
+                                            String path = "/users/" + userID + "/titles";
+                                            DatabaseReference myRef = database.getReference(path).push();
+                                            if(info.getText() != "" && info.getText() != "can't find game with this title" ){
                                                 myRef.setValue(info.getText().toString());
+                                                Toast.makeText(AddGameActivity.this, "Game added to list", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
