@@ -66,9 +66,12 @@ public class GameListActivity extends AppCompatActivity {
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-               gameList.setText(listView.getItemAtPosition(i).toString());
+               Intent intent = new Intent(GameListActivity.this, GameCardActivity.class);
+               intent.putExtra("GameTitle", listView.getItemAtPosition(i).toString());
+               startActivity(intent);
            }
        });
+
         addGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
