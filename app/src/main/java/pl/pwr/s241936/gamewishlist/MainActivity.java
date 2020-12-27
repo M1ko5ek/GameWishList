@@ -22,8 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView info;
     private TextView register;
     private FirebaseAuth mAuth;
-    private String user_email;
-    private String user_password;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +36,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(validate()) {
-                    user_email = MainActivity.this.email.getText().toString().trim();
-                    user_password = MainActivity.this.password.getText().toString().trim();
+                    String user_email = MainActivity.this.email.getText().toString().trim();
+                    String user_password = MainActivity.this.password.getText().toString().trim();
+                    loginUser(user_email, user_password);
 
-                    mAuth.signInWithEmailAndPassword(user_email, user_password)
-                            .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        openGameListActivity();
-
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Toast.makeText(MainActivity.this, "Wrong email or password", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
                 }
             }
         });
@@ -64,6 +50,20 @@ public class MainActivity extends AppCompatActivity {
                 openRegisterActiviy();
             }
         });
+    }
+
+    private void loginUser(String email, String password){
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            openGameListActivity();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Wrong email or password", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void setupUIViews(){
@@ -100,4 +100,10 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
 }

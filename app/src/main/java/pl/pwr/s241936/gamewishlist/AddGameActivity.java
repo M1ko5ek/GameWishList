@@ -84,7 +84,9 @@ public class AddGameActivity extends AppCompatActivity {
                                         public void onClick(View view) {
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                                             DatabaseReference myRef = database.getReference("games");
-                                            myRef.setValue(info.getText().toString());
+                                            if(info.getText() != ""){
+                                                myRef.setValue(info.getText().toString());
+                                            }
                                         }
                                     });
 
