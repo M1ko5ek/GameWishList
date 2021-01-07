@@ -2,7 +2,10 @@ package pl.pwr.s241936.gamewishlist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -12,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class GameCardActivity extends AppCompatActivity {
 
@@ -36,6 +40,8 @@ public class GameCardActivity extends AppCompatActivity {
                     final Document docSteam = Jsoup.connect("https://store.steampowered.com/search/?term=" + gameTitle.getText().toString() + "&category1=998").get();
 
                     Float minPrice;
+                    final String link;
+
                     minPrice = steamScrap(docSteam);
 
                     String name = nameOperations();
@@ -44,13 +50,27 @@ public class GameCardActivity extends AppCompatActivity {
                     if(gogPrice < minPrice)
                     {
                         minPrice = gogPrice;
+                        link = "https://www.gog.com/game/" + name;
+                    }else {
+                        link = steamLink(docSteam);
                     }
 
                     final Float finalMinPrice = minPrice;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            gamePrice.setText(finalMinPrice.toString() + " zł");
+                            DecimalFormat df = new DecimalFormat();
+                            df.setMinimumFractionDigits(2);
+                            gamePrice.setText(df.format(finalMinPrice) + " zł");
+
+                            goToStore.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Uri uriUrl = Uri.parse(link);
+                                    Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+                                    startActivity(launchBrowser);
+                                }
+                            });
                         }
                     });
 
@@ -102,6 +122,20 @@ public class GameCardActivity extends AppCompatActivity {
             }
         }
         return Float.MAX_VALUE;
+    }
+
+    private String steamLink(Document doc)
+    {
+        Elements el = doc.select("#search_results");
+        Elements elements = el.select("a");
+        for (Element element : elements) {
+            String title = element.select("span.title").text();
+            if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase())) {
+                String link = element.select("a").attr("href");
+                return link;
+            }
+        }
+        return "";
     }
 
     private float gogScrap(Document doc){
