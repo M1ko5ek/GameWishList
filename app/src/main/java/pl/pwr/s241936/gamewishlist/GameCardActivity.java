@@ -2,10 +2,7 @@ package pl.pwr.s241936.gamewishlist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -36,21 +33,27 @@ public class GameCardActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    final Document doc = Jsoup.connect("https://store.steampowered.com/search/?term=" + gameTitle.getText().toString() + "&category1=998").get();
-                    steamScrap(doc);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+                    final Document docSteam = Jsoup.connect("https://store.steampowered.com/search/?term=" + gameTitle.getText().toString() + "&category1=998").get();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
+                    Float minPrice;
+                    minPrice = steamScrap(docSteam);
+
                     String name = nameOperations();
-                    final Document doc = Jsoup.connect("https://www.gog.com/game/" + name).get();
-                    gogScrap(doc);
+                    final Document docGog = Jsoup.connect("https://www.gog.com/game/" + name).get();
+                    float gogPrice = gogScrap(docGog);
+                    if(gogPrice < minPrice)
+                    {
+                        minPrice = gogPrice;
+                    }
+
+                    final Float finalMinPrice = minPrice;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            gamePrice.setText(finalMinPrice.toString() + " zł");
+                        }
+                    });
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -76,7 +79,7 @@ public class GameCardActivity extends AppCompatActivity {
         return name;
     }
 
-    private void steamScrap(Document doc){
+    private float steamScrap(Document doc){
         Elements el = doc.select("#search_results");
         Elements elements = el.select("a");
         for (Element element : elements) {
@@ -86,22 +89,31 @@ public class GameCardActivity extends AppCompatActivity {
                 if(price == ""){
                     String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow ]").text();
                     discountedPrice = discountedPrice.split("zł",2)[1];
-                    System.out.println("STEAM: " + discountedPrice);
+                    discountedPrice = discountedPrice.replace("zł", "");
+                    discountedPrice = discountedPrice.replace(",", ".");
+                    float discountedPriceFloat = Float.parseFloat(discountedPrice);
+                    return discountedPriceFloat;
                 } else{
-                    System.out.println("STEAM: " + price);
+                    price = price.replace("zł", "");
+                    price = price.replace(",", ".");
+                    float priceFloat = Float.parseFloat(price);
+                    return priceFloat;
                 }
             }
         }
+        return Float.MAX_VALUE;
     }
 
-    private void gogScrap(Document doc){
+    private float gogScrap(Document doc){
         Elements el = doc.select("div[class=product-actions-price]");
-        String price ="999999";
+        String price ="99999";
         if(el.toString() != ""){
             price = el.select(".product-actions-price__final-amount").text();
-            System.out.println("GOG: " + price);
+            float priceFloat = Float.parseFloat(price);
+            return priceFloat;
         }else{
-            System.out.println("GOG: " + price);
+            float priceFloat = Float.MAX_VALUE;
+            return priceFloat;
         }
     }
 }
