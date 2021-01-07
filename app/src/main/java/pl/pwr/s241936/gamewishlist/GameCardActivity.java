@@ -37,35 +37,20 @@ public class GameCardActivity extends AppCompatActivity {
             public void run() {
                 try {
                     final Document doc = Jsoup.connect("https://store.steampowered.com/search/?term=" + gameTitle.getText().toString() + "&category1=998").get();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Elements el = doc.select("#search_results");
-                            Elements elements = el.select("a");
-                            for (Element element : elements) {
-                                String title = element.select("span.title").text();
-                                if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase())) {
-                                    String price = element.select("div[class=col search_price  responsive_secondrow]").text();
-                                    if(price == ""){
-                                        String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow ]").text();
-                                        discountedPrice = discountedPrice.split("zł",2)[1];
-                                        gamePrice.setText(discountedPrice);
-                                    } else{
-                                        gamePrice.setText(price);
-                                    }
-                                    final String link = element.select("a").attr("href");
-                                    goToStore.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Uri uriUrl = Uri.parse(link);
-                                            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
-                                            startActivity(launchBrowser);
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    });
+                    steamScrap(doc);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String name = nameOperations();
+                    final Document doc = Jsoup.connect("https://www.gog.com/game/" + name).get();
+                    gogScrap(doc);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -78,5 +63,45 @@ public class GameCardActivity extends AppCompatActivity {
         gamePrice = (TextView)findViewById(R.id.gamePrice);
         goToStore = (Button)findViewById(R.id.goToStore);
 
+    }
+
+    private String nameOperations(){
+        String name = GameCardActivity.this.gameTitle.getText().toString();
+        name = name.replace(" ","_");
+        name = name.replace(":","");
+        name = name.replace("™","");
+        name = name.replace("®","");
+        name = name.replace("'","");
+        name = name.replace("__","_");
+        return name;
+    }
+
+    private void steamScrap(Document doc){
+        Elements el = doc.select("#search_results");
+        Elements elements = el.select("a");
+        for (Element element : elements) {
+            String title = element.select("span.title").text();
+            if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase())) {
+                String price = element.select("div[class=col search_price  responsive_secondrow]").text();
+                if(price == ""){
+                    String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow ]").text();
+                    discountedPrice = discountedPrice.split("zł",2)[1];
+                    System.out.println("STEAM: " + discountedPrice);
+                } else{
+                    System.out.println("STEAM: " + price);
+                }
+            }
+        }
+    }
+
+    private void gogScrap(Document doc){
+        Elements el = doc.select("div[class=product-actions-price]");
+        String price ="999999";
+        if(el.toString() != ""){
+            price = el.select(".product-actions-price__final-amount").text();
+            System.out.println("GOG: " + price);
+        }else{
+            System.out.println("GOG: " + price);
+        }
     }
 }
