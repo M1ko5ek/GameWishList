@@ -107,6 +107,7 @@ public class GameCardActivity extends AppCompatActivity {
                                 myRef.child(snapshot.getKey()).removeValue();
                                 myRef.removeEventListener(this);
                                 openGameListActivity();
+                                break;
                             }
                         }
                     }

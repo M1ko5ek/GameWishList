@@ -91,6 +91,7 @@ public class AddGameActivity extends AppCompatActivity {
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                                             String path = "/users/" + userID + "/titles";
 
+
                                             DatabaseReference myRef = database.getReference(path).push();
                                             if(info.getText() != "" && info.getText() != "can't find game with this title" ){
                                                 myRef.setValue(info.getText().toString());
