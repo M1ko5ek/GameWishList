@@ -31,6 +31,7 @@ public class AddGameActivity extends AppCompatActivity {
     private TextView text0,text1,text2,text3,text4,text5,text6,text7,text8,text9,text10,text11,text12,text13,text14,text15,text16,text17,text18,text19,text20;
     private TextView[] textViews;
     private FirebaseAuth mAuth;
+    private boolean gameAddedYet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,15 +89,38 @@ public class AddGameActivity extends AppCompatActivity {
                                     add.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                            String path = "/users/" + userID + "/titles";
+                                            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                            final String path = "/users/" + userID + "/titles";
+                                            final DatabaseReference myRef = database.getReference(path);
+
+                                            gameAddedYet = false;
+                                            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                                                        if (info.getText().equals(snapshot.getValue())) {
+                                                            gameAddedYet = true;
+                                                            Toast.makeText(AddGameActivity.this, "Game already added to list", Toast.LENGTH_SHORT).show();
+                                                            break;
+                                                        }
+                                                    }
+                                                    DatabaseReference myRefPush = database.getReference(path).push();
+                                                    if (info.getText() != "" && info.getText() != "can't find game with this title" && gameAddedYet == false) {
+                                                        System.out.println(gameAddedYet);
+                                                        myRefPush.setValue(info.getText().toString());
+                                                        Toast.makeText(AddGameActivity.this, "Game added to list", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError error) {
+                                                    // Failed to read value
+                                                }
+                                            });
 
 
-                                            DatabaseReference myRef = database.getReference(path).push();
-                                            if(info.getText() != "" && info.getText() != "can't find game with this title" ){
-                                                myRef.setValue(info.getText().toString());
-                                                Toast.makeText(AddGameActivity.this, "Game added to list", Toast.LENGTH_SHORT).show();
-                                            }
+
+
                                         }
                                     });
                                 }
