@@ -70,6 +70,7 @@ public class GameCardActivity extends AppCompatActivity {
                             DecimalFormat df = new DecimalFormat();
                             df.setMinimumFractionDigits(2);
                             gamePrice.setText(df.format(finalMinPrice) + " zł");
+                            findViewById(R.id.progressBar2).setVisibility(View.GONE);
 
                             goToStore.setOnClickListener(new View.OnClickListener() {
                                 @Override

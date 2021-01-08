@@ -11,15 +11,6 @@
         android:layout_height="100dp" />
 
     <EditText
-        android:id="@+id/editTextUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="NAME" />
-
-    <EditText
         android:id="@+id/editTextUserEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

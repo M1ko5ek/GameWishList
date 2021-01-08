@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private EditText userName;
     private EditText userEmail;
     private EditText userPassword1;
     private EditText userPassword2;
@@ -66,7 +65,6 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void setupUIViews(){
-        userName = (EditText)findViewById(R.id.editTextUserName);
         userEmail = (EditText)findViewById(R.id.editTextUserEmail);
         userPassword1 = (EditText)findViewById(R.id.editTextUserPassword);
         userPassword2 = (EditText)findViewById(R.id.editTextUserPasswordRepeat);
@@ -77,11 +75,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private Boolean validate (){
         Boolean result = false;
-        String name = RegistrationActivity.this.userName.getText().toString();
         String email = RegistrationActivity.this.userEmail.getText().toString();
         String password1 = RegistrationActivity.this.userPassword1.getText().toString();
         String password2 = RegistrationActivity.this.userPassword2.getText().toString();
-        if(name.isEmpty() || email.isEmpty() || password1.isEmpty() || password2.isEmpty()){
+        if(email.isEmpty() || password1.isEmpty() || password2.isEmpty()){
         {
             Toast.makeText(this, "Please enter all the details", Toast.LENGTH_SHORT).show();
         }

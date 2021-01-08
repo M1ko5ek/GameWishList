@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +54,11 @@ public class GameListActivity extends AppCompatActivity {
                     list.add(snapshot.getValue().toString());
                 }
                 adapter.notifyDataSetChanged();
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                if(list.isEmpty() == true)
+                {
+                    Toast.makeText(GameListActivity.this, "Your wish list is empty", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -60,6 +66,8 @@ public class GameListActivity extends AppCompatActivity {
                 // Failed to read value
             }
         });
+
+
 
 
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
