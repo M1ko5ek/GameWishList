@@ -39,7 +39,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:ems="10" />
+        android:ems="10"
+        android:textSize="18sp" />
 
     <Space
         android:layout_width="match_parent"

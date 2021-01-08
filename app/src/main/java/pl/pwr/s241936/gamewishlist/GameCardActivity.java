@@ -89,11 +89,12 @@ public class GameCardActivity extends AppCompatActivity {
             }
         }).start();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         mAuth = FirebaseAuth.getInstance();
         String userID = mAuth.getUid();
-        String path = "/users/" + userID + "/titles";
-        final DatabaseReference myRef = database.getReference(path);
+        final String path = "/users/" + userID + "/titles";
+
+        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(path);
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,11 +105,11 @@ public class GameCardActivity extends AppCompatActivity {
                         for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                             if(gameTitle.getText().equals(snapshot.getValue().toString())){
                                 myRef.child(snapshot.getKey()).removeValue();
+                                myRef.removeEventListener(this);
                                 openGameListActivity();
                             }
                         }
                     }
-
                     @Override
                     public void onCancelled(DatabaseError error) {
                         // Failed to read value

@@ -40,7 +40,6 @@ public class AddGameActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         final String userID = mAuth.getUid();
-        System.out.println(userID);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +69,6 @@ public class AddGameActivity extends AppCompatActivity {
                                         for (Element element : elements) {
                                             if (n <= 20) {
                                                 final String title = element.select("span.title").text();
-                                                //final String price = element.select("div[class=col search_price  responsive_secondrow]").text();
-                                                //final String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow]").text();
                                                 textViews[n].setText(title);
                                                 textViews[n].setOnClickListener(new View.OnClickListener() {
                                                     @Override
@@ -94,25 +91,7 @@ public class AddGameActivity extends AppCompatActivity {
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                                             String path = "/users/" + userID + "/titles";
 
-                                            final DatabaseReference myRef = database.getReference(path);
-                                            myRef.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                                        if(info.getText().equals(snapshot.getValue().toString())){
-                                                            Toast.makeText(AddGameActivity.this, "Game already added to list", Toast.LENGTH_SHORT).show();
-                                                        }else{
-                                                            myRef.push();
-                                                        }
-                                                    }
-                                                }
-                                                @Override
-                                                public void onCancelled(DatabaseError error) {
-                                                    // Failed to read value
-                                                }
-                                            });
-
-
+                                            DatabaseReference myRef = database.getReference(path).push();
                                             if(info.getText() != "" && info.getText() != "can't find game with this title" ){
                                                 myRef.setValue(info.getText().toString());
                                                 Toast.makeText(AddGameActivity.this, "Game added to list", Toast.LENGTH_SHORT).show();
