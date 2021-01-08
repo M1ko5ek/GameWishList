@@ -9,6 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,7 +27,8 @@ import java.text.DecimalFormat;
 public class GameCardActivity extends AppCompatActivity {
 
     private TextView gameTitle, gamePrice;
-    private Button goToStore;
+    private Button goToStore, deleteButton;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +87,42 @@ public class GameCardActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        String userID = mAuth.getUid();
+        String path = "/users/" + userID + "/titles";
+        final DatabaseReference myRef = database.getReference(path);
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            if(gameTitle.getText().equals(snapshot.getValue().toString())){
+                                myRef.child(snapshot.getKey()).removeValue();
+                                openGameListActivity();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                    }
+                });
+            }
+        });
+
     }
 
     private void setupUIViews() {
         gameTitle = (TextView)findViewById(R.id.gameTitle);
         gamePrice = (TextView)findViewById(R.id.gamePrice);
         goToStore = (Button)findViewById(R.id.goToStore);
+        deleteButton = (Button)findViewById(R.id.deleteButton);
 
     }
 
@@ -140,14 +178,19 @@ public class GameCardActivity extends AppCompatActivity {
 
     private float gogScrap(Document doc){
         Elements el = doc.select("div[class=product-actions-price]");
-        String price ="99999";
+        String price ="999.99";
         if(el.toString() != ""){
             price = el.select(".product-actions-price__final-amount").text();
             float priceFloat = Float.parseFloat(price);
             return priceFloat;
         }else{
-            float priceFloat = Float.MAX_VALUE;
+            float priceFloat = (float) 999.99;
             return priceFloat;
         }
+    }
+
+    private void openGameListActivity(){
+        Intent intent = new Intent(this, GameListActivity.class);
+        startActivity(intent);
     }
 }

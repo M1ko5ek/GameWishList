@@ -9,8 +9,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -90,14 +93,32 @@ public class AddGameActivity extends AppCompatActivity {
                                         public void onClick(View view) {
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                                             String path = "/users/" + userID + "/titles";
-                                            DatabaseReference myRef = database.getReference(path).push();
+
+                                            final DatabaseReference myRef = database.getReference(path);
+                                            myRef.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                                        if(info.getText().equals(snapshot.getValue().toString())){
+                                                            Toast.makeText(AddGameActivity.this, "Game already added to list", Toast.LENGTH_SHORT).show();
+                                                        }else{
+                                                            myRef.push();
+                                                        }
+                                                    }
+                                                }
+                                                @Override
+                                                public void onCancelled(DatabaseError error) {
+                                                    // Failed to read value
+                                                }
+                                            });
+
+
                                             if(info.getText() != "" && info.getText() != "can't find game with this title" ){
                                                 myRef.setValue(info.getText().toString());
                                                 Toast.makeText(AddGameActivity.this, "Game added to list", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
-
                                 }
                             });
 
