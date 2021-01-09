@@ -195,8 +195,8 @@ public class GameCardActivity extends AppCompatActivity {
             if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase()) && foundPrice == false) {
                 foundPrice = true;
                 String price = element.select("div[class=col search_price  responsive_secondrow]").text();
-                if(price == ""){
-                    String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow ]").text();
+                String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow ]").text();
+                if(price == "" && discountedPrice != ""){
                     discountedPrice = discountedPrice.split("zł",2)[1];
                     discountedPrice = discountedPrice.replace("zł", "");
                     discountedPrice = discountedPrice.replace(",", ".");
@@ -204,7 +204,7 @@ public class GameCardActivity extends AppCompatActivity {
                     float discountedPriceFloat = Float.parseFloat(discountedPrice);
                     return discountedPriceFloat;
                 }else{
-                    if(price.equals("Free to Play") || price.equals("Free")){
+                    if(price.equals("Free to Play") || price.equals("Free") || price.isEmpty()){
                         price = "0.00";
                     }else{
                         price = price.replace("zł", "");
