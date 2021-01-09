@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,6 +31,7 @@ public class GameCardActivity extends AppCompatActivity {
     private TextView gameTitle, gamePrice;
     private Button goToStore, deleteButton;
     private FirebaseAuth mAuth;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,23 @@ public class GameCardActivity extends AppCompatActivity {
         if(bundle != null){
             gameTitle.setText(bundle.getString("GameTitle"));
         }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Document docImgSteam = Jsoup.connect("https://store.steampowered.com/search/?term=" + gameTitle.getText().toString() + "&category1=998").get();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            imgDownload(docImgSteam);
+                        }
+                    });
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
         new Thread(new Runnable() {
             @Override
@@ -126,6 +146,7 @@ public class GameCardActivity extends AppCompatActivity {
         gamePrice = (TextView)findViewById(R.id.gamePrice);
         goToStore = (Button)findViewById(R.id.goToStore);
         deleteButton = (Button)findViewById(R.id.deleteButton);
+        imageView = (ImageView)findViewById(R.id.imageView);
 
     }
 
@@ -138,6 +159,27 @@ public class GameCardActivity extends AppCompatActivity {
         name = name.replace("'","");
         name = name.replace("__","_");
         return name;
+    }
+
+    private void imgDownload(Document docSteam){
+        Elements el = docSteam.select("#search_results");
+        Elements elements = el.select("a");
+        for (Element element : elements) {
+            String title = element.select("span.title").text();
+            if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase())) {
+                Elements images = element.select("div[class=col search_capsule]");
+                String bigImage = images.select("img").attr("srcset").toString();
+                bigImage = bigImage.split(",",2)[1];
+                bigImage = bigImage.substring(0, bigImage.length() - 2).trim();
+
+
+                Picasso.get()
+                        .load(bigImage)
+                        .resize(500, 250)
+                        .centerCrop()
+                        .into(imageView);
+            }
+        }
     }
 
     private float steamScrap(Document doc){
