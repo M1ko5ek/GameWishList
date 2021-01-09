@@ -32,6 +32,8 @@ public class GameCardActivity extends AppCompatActivity {
     private Button goToStore, deleteButton;
     private FirebaseAuth mAuth;
     private ImageView imageView;
+    private boolean foundImg;
+    private boolean foundPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,9 +166,11 @@ public class GameCardActivity extends AppCompatActivity {
     private void imgDownload(Document docSteam){
         Elements el = docSteam.select("#search_results");
         Elements elements = el.select("a");
+        foundImg = false;
         for (Element element : elements) {
             String title = element.select("span.title").text();
-            if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase())) {
+            if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase()) && foundImg == false) {
+                foundImg = true;
                 Elements images = element.select("div[class=col search_capsule]");
                 String bigImage = images.select("img").attr("srcset").toString();
                 bigImage = bigImage.split(",",2)[1];
@@ -175,7 +179,7 @@ public class GameCardActivity extends AppCompatActivity {
 
                 Picasso.get()
                         .load(bigImage)
-                        .resize(500, 250)
+                        .resize(693, 261)
                         .centerCrop()
                         .into(imageView);
             }
@@ -185,20 +189,27 @@ public class GameCardActivity extends AppCompatActivity {
     private float steamScrap(Document doc){
         Elements el = doc.select("#search_results");
         Elements elements = el.select("a");
+        foundPrice = false;
         for (Element element : elements) {
             String title = element.select("span.title").text();
-            if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase())) {
+            if (gameTitle.getText().toString().toUpperCase().equals(title.toUpperCase()) && foundPrice == false) {
+                foundPrice = true;
                 String price = element.select("div[class=col search_price  responsive_secondrow]").text();
                 if(price == ""){
                     String discountedPrice = element.select("div[class=col search_price discounted responsive_secondrow ]").text();
                     discountedPrice = discountedPrice.split("zł",2)[1];
                     discountedPrice = discountedPrice.replace("zł", "");
                     discountedPrice = discountedPrice.replace(",", ".");
+
                     float discountedPriceFloat = Float.parseFloat(discountedPrice);
                     return discountedPriceFloat;
-                } else{
-                    price = price.replace("zł", "");
-                    price = price.replace(",", ".");
+                }else{
+                    if(price.equals("Free to Play") || price.equals("Free")){
+                        price = "0.00";
+                    }else{
+                        price = price.replace("zł", "");
+                        price = price.replace(",", ".");
+                    }
                     float priceFloat = Float.parseFloat(price);
                     return priceFloat;
                 }
