@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class GameListActivity extends AppCompatActivity {
 
     private Button addGame;
-    private TextView gameList;
     private Button logut;
     private FirebaseAuth mAuth;
     private ListView listView;
@@ -34,12 +33,11 @@ public class GameListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_list);
         setupUIViews();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         mAuth = FirebaseAuth.getInstance();
         String userID = mAuth.getUid();
         String path = "/users/" + userID + "/titles";
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(path);
 
         final ArrayList<String> list = new ArrayList<>();
@@ -63,7 +61,7 @@ public class GameListActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
+
             }
         });
 
@@ -94,7 +92,6 @@ public class GameListActivity extends AppCompatActivity {
 
     private void setupUIViews(){
         addGame = (Button)findViewById(R.id.addGame);
-        gameList = (TextView)findViewById(R.id.textViewGameList);
         logut = (Button)findViewById(R.id.logout);
         listView = (ListView)findViewById(R.id.listView);
     }

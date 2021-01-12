@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private Button login;
-    private TextView info;
     private TextView register;
     private FirebaseAuth mAuth;
 
@@ -70,19 +69,16 @@ public class MainActivity extends AppCompatActivity {
         email = (EditText)findViewById(R.id.editTextTextEmailAddress);
         password = (EditText)findViewById(R.id.editTextTextPassword);
         login = (Button)findViewById(R.id.buttonLogin);
-        info = (TextView)findViewById(R.id.textVievLoginInfo);
         register = (TextView)findViewById(R.id.textViewRegister);
     }
 
 
     private void openRegisterActiviy(){
-        info.setText("");
         Intent intent = new Intent(this, RegistrationActivity.class);
         startActivity(intent);
     }
 
     private void openGameListActivity(){
-        info.setText("");
         Intent intent = new Intent(this, GameListActivity.class);
         startActivity(intent);
     }

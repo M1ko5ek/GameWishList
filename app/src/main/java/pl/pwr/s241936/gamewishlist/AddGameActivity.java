@@ -117,10 +117,6 @@ public class AddGameActivity extends AppCompatActivity {
                                                     // Failed to read value
                                                 }
                                             });
-
-
-
-
                                         }
                                     });
                                 }

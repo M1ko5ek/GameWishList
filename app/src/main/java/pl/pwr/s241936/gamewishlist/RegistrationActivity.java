@@ -20,7 +20,6 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText userPassword1;
     private EditText userPassword2;
     private Button register;
-    private TextView info;
     private TextView login;
     private FirebaseAuth mAuth;
     private String user_email;
@@ -38,7 +37,6 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(validate()){
-                    // send to firebase
                     user_email = RegistrationActivity.this.userEmail.getText().toString().trim();
                     user_password = RegistrationActivity.this.userPassword1.getText().toString().trim();
 
@@ -69,7 +67,6 @@ public class RegistrationActivity extends AppCompatActivity {
         userPassword1 = (EditText)findViewById(R.id.editTextUserPassword);
         userPassword2 = (EditText)findViewById(R.id.editTextUserPasswordRepeat);
         register = (Button)findViewById(R.id.buttonRegister);
-        info = (TextView)findViewById(R.id.textVievRegisterInfo);
         login = (TextView)findViewById(R.id.textViewLogin);
     }
 
@@ -91,7 +88,6 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void openLoginActiviy(){
-        info.setText("");
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
