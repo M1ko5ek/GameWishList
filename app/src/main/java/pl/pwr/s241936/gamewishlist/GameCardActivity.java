@@ -69,19 +69,29 @@ public class GameCardActivity extends AppCompatActivity {
                 try {
                     final Document docSteam = Jsoup.connect("https://store.steampowered.com/search/?term=" + gameTitle.getText().toString() + "&category1=998").get();
 
-                    Float minPrice;
                     final String link;
 
-                    minPrice = steamScrap(docSteam);
+                    float steamPrice = steamScrap(docSteam);
 
-                    String name = nameOperations();
-                    final Document docGog = Jsoup.connect("https://www.gog.com/game/" + name).get();
+                    String nameGog = nameGogOperations();
+                    final Document docGog = Jsoup.connect("https://www.gog.com/game/" + nameGog).get();
                     float gogPrice = gogScrap(docGog);
-                    if(gogPrice < minPrice)
+
+                    String nameMuve = nameMuveOperations();
+                    final Document docMuve = Jsoup.connect("https://muve.pl/szukaj?query=" + nameMuve).get();
+                    float muvePrice = muveScrap(docMuve);
+
+                    float minPrice;
+                    if(gogPrice < steamPrice && gogPrice < muvePrice)
                     {
                         minPrice = gogPrice;
-                        link = "https://www.gog.com/game/" + name;
+                        link = "https://www.gog.com/game/" + nameGog;
+                    }else if(muvePrice < steamPrice && muvePrice < gogPrice)
+                    {
+                        minPrice = muvePrice;
+                        link = muveLink(docMuve);
                     }else {
+                        minPrice = steamPrice;
                         link = steamLink(docSteam);
                     }
 
@@ -152,7 +162,7 @@ public class GameCardActivity extends AppCompatActivity {
 
     }
 
-    private String nameOperations(){
+    private String nameGogOperations(){
         String name = GameCardActivity.this.gameTitle.getText().toString();
         name = name.replace(" ","_");
         name = name.replace(":","");
@@ -160,6 +170,13 @@ public class GameCardActivity extends AppCompatActivity {
         name = name.replace("®","");
         name = name.replace("'","");
         name = name.replace("__","_");
+        return name;
+    }
+
+    private String nameMuveOperations(){
+        String name = GameCardActivity.this.gameTitle.getText().toString();
+        name = name.replace("'","%27");
+        name = name.replace("  "," ");
         return name;
     }
 
@@ -243,6 +260,35 @@ public class GameCardActivity extends AppCompatActivity {
             float priceFloat = (float) 999.99;
             return priceFloat;
         }
+    }
+
+    private float muveScrap(Document doc){
+        Elements elements = doc.select("div[class=gr-item  platform223]");
+        for (Element element : elements) {
+            if(!element.select("h2[class=prod-title]").text().contains("DLC") && !element.select("h2[class=prod-title]").text().contains("poradnik")
+                    && !element.select("h2[class=prod-title]").text().contains("Edition") && !element.select("h2[class=prod-title]").text().contains("Season Pass")){
+                String price = element.attr("data-price");
+                price = price.replace("zł", "");
+                price = price.replace(",", ".");
+                float priceFloat = Float.parseFloat(price);
+                return priceFloat;
+            }
+        }
+        float priceFloat = (float) 999.99;
+        return priceFloat;
+    }
+
+    private String muveLink(Document doc){
+        Elements elements = doc.select("div[class=gr-item  platform223]");
+        for (Element element : elements) {
+            if(!element.select("h2[class=prod-title]").text().contains("DLC") && !element.select("h2[class=prod-title]").text().contains("poradnik")
+                    && !element.select("h2[class=prod-title]").text().contains("Edition") && !element.select("h2[class=prod-title]").text().contains("Season Pass")){
+
+                String link = "https://muve.pl/" + element.select("a").attr("href");
+                return link;
+            }
+        }
+        return "";
     }
 
     private void openGameListActivity(){
