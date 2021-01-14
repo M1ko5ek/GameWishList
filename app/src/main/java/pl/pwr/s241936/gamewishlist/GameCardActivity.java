@@ -266,7 +266,8 @@ public class GameCardActivity extends AppCompatActivity {
         Elements elements = doc.select("div[class=gr-item  platform223]");
         for (Element element : elements) {
             if(!element.select("h2[class=prod-title]").text().contains("DLC") && !element.select("h2[class=prod-title]").text().contains("poradnik")
-                    && !element.select("h2[class=prod-title]").text().contains("Edition") && !element.select("h2[class=prod-title]").text().contains("Season Pass")){
+                    && !element.select("h2[class=prod-title]").text().contains("Edition") && !element.select("h2[class=prod-title]").text().contains("Season Pass")
+                    && !element.select("h2[class=prod-title]").text().contains("Starter Pack")){
                 String price = element.attr("data-price");
                 price = price.replace("zł", "");
                 price = price.replace(",", ".");
@@ -282,7 +283,8 @@ public class GameCardActivity extends AppCompatActivity {
         Elements elements = doc.select("div[class=gr-item  platform223]");
         for (Element element : elements) {
             if(!element.select("h2[class=prod-title]").text().contains("DLC") && !element.select("h2[class=prod-title]").text().contains("poradnik")
-                    && !element.select("h2[class=prod-title]").text().contains("Edition") && !element.select("h2[class=prod-title]").text().contains("Season Pass")){
+                    && !element.select("h2[class=prod-title]").text().contains("Edition") && !element.select("h2[class=prod-title]").text().contains("Season Pass")
+                    && !element.select("h2[class=prod-title]").text().contains("Starter Pack")){
 
                 String link = "https://muve.pl/" + element.select("a").attr("href");
                 return link;
